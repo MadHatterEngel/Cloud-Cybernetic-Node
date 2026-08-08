@@ -18,7 +18,7 @@ except Exception:
     st.stop()
 
 # Use Gemini 3.5 Flash for speed in evolution, and text-embedding-004 for math vectors
-MODEL_NAME = "gemini-3.5-flash"
+MODEL_NAME = "gemini-2.0-flash"
 EMBED_MODEL = "models/text-embedding-004"
 
 # --- File Architecture ---
