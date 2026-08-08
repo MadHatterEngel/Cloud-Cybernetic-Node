@@ -185,11 +185,11 @@ def process_evolution(source_code: str, state: dict, knowledge: dict):
     ```
     st.sidebar.title("System Controls")
 
-# --- ADD THIS NEW BUTTON ---
+
 if st.sidebar.button("⚙️ Force Evolution Cycle", use_container_width=True):
     st.session_state.evolution_triggered = False
     st.rerun()
-# ---------------------------
+
 
 if st.sidebar.button("🚨 EMERGENCY STOP", type="primary", use_container_width=True):
     st.session_state.emergency_stop = True
