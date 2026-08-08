@@ -17,7 +17,7 @@ except Exception:
     st.error("SYSTEM HALT: GEMINI_API_KEY not found in Streamlit Secrets.")
     st.stop()
 
-# Use Gemini 1.5 Flash for speed in evolution, and text-embedding-004 for math vectors
+# Use Gemini 3.5 Flash for speed in evolution, and text-embedding-004 for math vectors
 MODEL_NAME = "gemini-3.5-flash"
 EMBED_MODEL = "models/text-embedding-004"
 
@@ -170,6 +170,7 @@ def process_evolution(source_code: str, state: dict, knowledge: dict):
         {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
     ]
     
+    # The prompt string now cleanly ends without executing python code inside it
     prompt = f"""
     You are an autonomous, self-evolving cybernetic algorithm running on a cloud node.
     
@@ -183,17 +184,6 @@ def process_evolution(source_code: str, state: dict, knowledge: dict):
     ```python
     {source_code}
     ```
-    st.sidebar.title("System Controls")
-
-
-if st.sidebar.button("⚙️ Force Evolution Cycle", use_container_width=True):
-    st.session_state.evolution_triggered = False
-    st.rerun()
-
-
-if st.sidebar.button("🚨 EMERGENCY STOP", type="primary", use_container_width=True):
-    st.session_state.emergency_stop = True
-    st.session_state.pending_update = False
 
     SYSTEM INVARIANT DIRECTIVE:
     You are strictly forbidden from modifying or omitting ANY code related to the Emergency Stop system, rollback routines, safety anchor markers, or file I/O operations.
@@ -249,6 +239,12 @@ st.set_page_config(page_title="Cloud Cybernetic Node", layout="wide")
 initialize_persistent_files()
 
 st.sidebar.title("System Controls")
+
+# The buttons are now safely in the execution body of the code
+if st.sidebar.button("⚙️ Force Evolution Cycle", use_container_width=True):
+    st.session_state.evolution_triggered = False
+    st.rerun()
+
 if st.sidebar.button("🚨 EMERGENCY STOP", type="primary", use_container_width=True):
     st.session_state.emergency_stop = True
     st.session_state.pending_update = False
@@ -296,7 +292,6 @@ if not st.session_state.evolution_triggered:
 st.sidebar.subheader("Cognitive Diagnostics")
 st.sidebar.json(current_state)
 
-# Added Download buttons so you can manually save evolved states before the cloud spins down
 st.sidebar.markdown("---")
 st.sidebar.subheader("Manual State Extraction")
 st.sidebar.download_button("Download Evolved Architecture", current_code, file_name="cloud_node.py")
@@ -331,6 +326,11 @@ for message in chat_memory:
 
 if prompt := st.chat_input("Enter command directive..."):
     with st.chat_message("user"): st.markdown(prompt)
+    
+    # Intercept commands directly via text input
+    if prompt.lower() in ["run your self analysis loop", "/evolve", "evolve"]:
+        st.session_state.evolution_triggered = False
+        st.rerun()
         
     with st.spinner("Calculating semantic vectors and retrieving core memory..."):
         prompt_embedding = get_embedding(prompt)
@@ -375,4 +375,3 @@ if prompt := st.chat_input("Enter command directive..."):
                 
         except Exception as e:
             st.error(f"Cloud compute offline: {e}")
-
