@@ -183,6 +183,17 @@ def process_evolution(source_code: str, state: dict, knowledge: dict):
     ```python
     {source_code}
     ```
+    st.sidebar.title("System Controls")
+
+# --- ADD THIS NEW BUTTON ---
+if st.sidebar.button("⚙️ Force Evolution Cycle", use_container_width=True):
+    st.session_state.evolution_triggered = False
+    st.rerun()
+# ---------------------------
+
+if st.sidebar.button("🚨 EMERGENCY STOP", type="primary", use_container_width=True):
+    st.session_state.emergency_stop = True
+    st.session_state.pending_update = False
 
     SYSTEM INVARIANT DIRECTIVE:
     You are strictly forbidden from modifying or omitting ANY code related to the Emergency Stop system, rollback routines, safety anchor markers, or file I/O operations.
