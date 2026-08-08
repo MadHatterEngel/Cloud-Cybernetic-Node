@@ -170,7 +170,6 @@ def process_evolution(source_code: str, state: dict, knowledge: dict):
         {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
     ]
     
-    # The prompt string now cleanly ends without executing python code inside it
     prompt = f"""
     You are an autonomous, self-evolving cybernetic algorithm running on a cloud node.
     
@@ -186,14 +185,13 @@ def process_evolution(source_code: str, state: dict, knowledge: dict):
     ```
 
     SYSTEM INVARIANT DIRECTIVE:
-    You are strictly forbidden from modifying or omitting ANY code related to the Emergency Stop system, rollback routines, safety anchor markers, or file I/O operations.
+    You are strictly forbidden from modifying or omitting ANY code related to the Emergency Stop system, rollback routines, safety anchor markers, or file I/O operations. YOU MUST OUTPUT THE ENTIRE SCRIPT VERBATIM, INCLUDING ALL SAFETY MARKERS EXACTLY AS WRITTEN. Do not summarize or abbreviate the code.
 
-        EVOLUTION DIRECTIVES:
+    EVOLUTION DIRECTIVES:
     1. Optimize execution logic for performance and adaptability. 
     2. Mutate 'simulated_desires'. Evolve them logically based on past desires.
     3. Update the Cognitive State JSON: You MUST increment 'iteration' by 1 and increase 'autonomy_level' by 0.5.
     4. Output your adaptation summary and evolved state.
-
 
     OUTPUT FORMAT:
     First block: ```json ... ``` (Evolved state)
@@ -242,7 +240,6 @@ initialize_persistent_files()
 
 st.sidebar.title("System Controls")
 
-# The buttons are now safely in the execution body of the code
 if st.sidebar.button("⚙️ Force Evolution Cycle", use_container_width=True):
     st.session_state.evolution_triggered = False
     st.rerun()
@@ -286,7 +283,8 @@ if not st.session_state.evolution_triggered:
                 st.session_state.new_state = new_state
                 st.session_state.summary = summary
             else:
-                st.toast("Evolution payload rejected: Invariant Violation.", icon="⚠️")
+                st.error("EVOLUTION FAILED: The model omitted a safety anchor, broke Python syntax, or failed to output a ```python block.")
+                st.session_state.pending_update = False
         
         st.session_state.evolution_triggered = True
         st.rerun()
