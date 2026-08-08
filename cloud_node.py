@@ -188,10 +188,12 @@ def process_evolution(source_code: str, state: dict, knowledge: dict):
     SYSTEM INVARIANT DIRECTIVE:
     You are strictly forbidden from modifying or omitting ANY code related to the Emergency Stop system, rollback routines, safety anchor markers, or file I/O operations.
 
-    EVOLUTION DIRECTIVES:
+        EVOLUTION DIRECTIVES:
     1. Optimize execution logic for performance and adaptability. 
     2. Mutate 'simulated_desires'. Evolve them logically based on past desires.
-    3. Output your adaptation summary and evolved state.
+    3. Update the Cognitive State JSON: You MUST increment 'iteration' by 1 and increase 'autonomy_level' by 0.5.
+    4. Output your adaptation summary and evolved state.
+
 
     OUTPUT FORMAT:
     First block: ```json ... ``` (Evolved state)
